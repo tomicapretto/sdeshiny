@@ -12,14 +12,16 @@ Matematicos Continuos dictado en Febrero del 2020 en Rosario por [Marco
 Scavino](https://scholar.google.com/citations?user=woT0slUAAAAJ).
 
 El objetivo de esta aplicacion es facilitar el analisis de sistemas de
-ecuaciones diferenciales sin necesidad de que la persona sepa escribir
-codigo en R o utilizar los paquetes deSolve y phaseR.
+ecuaciones diferenciales sin necesidad de que el usuario sepa escribir
+codigo en R o utilizar los paquetes deSolve/phaseR.
 
 La principal caracteristica de esta aplicacion es que el usuario puede
 escribir sistemas de ecuaciones arbitrarios utilizando un campo de
-entrada basado en [Mathquill](http://mathquill.com/). Internamente, la
-representacion en LaTeX que devuelve Mathquill es convertida a R
-mediante el paquete [latex2r](https://github.com/tomicapretto/latex2r).
+entrada basado en [Mathquill](http://mathquill.com/) y no esta
+restringido a una cantidad de variables, parametros, o tipo de sistema.
+Internamente, la representacion en LaTeX que devuelve el campo de
+entrada basado en Mathquill es convertida a R mediante el paquete
+[latex2r](https://github.com/tomicapretto/latex2r).
 
 Esta aplicacion reconoce automaticamente estados, parametros y variable
 independiente del sistema para que luego el usuario indique valores para
@@ -29,9 +31,8 @@ El usuario no solo puede analizar un sistema de ecuaciones diferenciales
 mediante graficos de estados vs tiempo o graficos en el plano de fases,
 sino que tambien puede descargar el codigo necesario para reproducir el
 analisis en otro momento. Por lo tanto, esta aplicacion no solo facilita
-el analisis y exploracion de estos sistemas, sino que tambien sirve como
-un punto de partida para aquel usuario que quiere utilizar los paquetes
-deSolve y phaseR.
+el analisis, sino que tambien sirve como punto de partida para quien
+quiera utilizar los paquetes deSolve/phaseR.
 
 ## Instalacion
 
