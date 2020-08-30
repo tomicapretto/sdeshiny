@@ -79,4 +79,4 @@ Mal:
 
 ## Video introductorio
 
-Aca voy a poner un video donde hago un analisis completo de un sistema para que quede como referecia.
+* [Como usar sdeshiny](https://www.youtube.com/watch?v=CZP9TaTwRlI)
