@@ -40,10 +40,11 @@ panel1 = function() {
       hr(),
       hidden(
         selectInput(
-          inputId = "select_plot_panel_1",
-          label = "Selecciona un estado",
+          inputId = "plot_states_panel_1",
+          label = "Estados",
           choices = "",
-          width = "40%"
+          width = "40%",
+          multiple = TRUE
         )
       ),
 
@@ -120,14 +121,31 @@ panel2 = function() {
                 width = "100%"
               )
             ),
-            hidden(
-              sliderInput(
-                inputId = "state1_range",
-                label = "Rango del estado 1",
-                min = -100, max = 100, value = c(0, 10)
+          fluidRow(
+            column(
+              width = 6,
+              hidden(
+                numericInput(
+                  inputId = "state1_min",
+                  label = "Limite inferior",
+                  value = 0,
+                  step = 1
+                )
+              )
+            ),
+            column(
+              width = 6,
+              hidden(
+                numericInput(
+                  inputId = "state1_max",
+                  label = "Limite superior",
+                  value = 20,
+                  step = 1
+                )
               )
             )
-          ),
+          )
+        ),
         column(
           width = 6,
           hidden(
@@ -138,17 +156,34 @@ panel2 = function() {
               width = "100%"
             )
           ),
-          hidden(
-            sliderInput(
-              inputId = "state2_range",
-              label = "Rango del estado 2",
-              min = -100, max = 100, value = c(0, 10)
+          fluidRow(
+            column(
+              width = 6,
+              hidden(
+                numericInput(
+                  inputId = "state2_min",
+                  label = "Limite inferior",
+                  value = 0,
+                  step = 1
+                )
+              )
+            ),
+            column(
+              width = 6,
+              hidden(
+                numericInput(
+                  inputId = "state2_max",
+                  label = "Limite superior",
+                  value = 20,
+                  step = 1
+                )
+              )
             )
           )
         )
       ),
 
-      plotOutput("plot_panel2", height = "420px", width = "560px"),
+      imageOutput("plot_panel2", width = "100%"),
 
       h3("Codigo"),
       fluidRow(
@@ -166,7 +201,7 @@ panel2 = function() {
           width = 6,
           disabled(
             downloadButton(
-              outputId = "dwnld_code_panel2",
+              outputId = "dwnld_code_panel_2",
               label = "Descargar codigo",
               style = "width:100%;"
             )

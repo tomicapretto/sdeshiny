@@ -48,17 +48,31 @@ app_sidebar = function() {
 
     uiOutput("paramsInputUI"),
 
-    hidden(
-      sliderInput(
-        inputId = "ind_var",
-        label = "",
-        value = c(0, 20),
-        min = 0,
-        max = 100,
-        step = 1,
-        round = 1
+    fluidRow(
+      column(
+        width = 6,
+        hidden(
+          numericInput(
+            inputId = "independent_min",
+            label = "",
+            value = 0,
+            step = 1
+          )
+        )
+      ),
+      column(
+        width = 6,
+        hidden(
+          numericInput(
+            inputId = "independent_max",
+            label = "",
+            value = 20,
+            step = 1
+          )
+        )
       )
     ),
+
 
     hidden(actionButton(
       inputId = "set_params",

@@ -149,86 +149,6 @@ process_equations = function(equations) {
   ))
 }
 
-print_header = function(ind, ind_min, ind_max, ind_n, param_names, param_values,
-                        state_names, state_values, multiple_states) {
-
-  if (multiple_states) {
-    state_values = recycle(state_values)
-    glue::glue(
-      "<<ind>> = seq(<<ind_min>>, <<ind_max>>, length.out = <<ind_n>>)\n",
-      "parameters = c(<<paste(param_names, '=', param_values, collapse = ', ')>>)\n",
-      "<<paste(state_names, '=',
-             sapply(state_values, function(x) paste0('c(' , paste(x, collapse = ', '), ')')),
-              collapse = '\n')>>\n",
-      .open = "<<", .close = ">>"
-    )
-  } else {
-    glue::glue(
-      "<<ind>> = seq(<<ind_min>>, <<ind_max>>, length.out = <<ind_n>>)\n",
-      "parameters = c(<<paste(param_names, '=', param_values, collapse = ', ')>>)\n",
-      "state = c(<<paste(state_names, '=', state_values, collapse = ', ')>>)\n",
-      .open = "<<", .close = ">>"
-    )
-  }
-}
-
-print_odefun = function(ind, state_names, equations) {
-  glue::glue(
-    "ode_function = function(<<ind>>, state, parameters) {\n",
-    "  with(as.list(c(state, parameters)), {\n",
-    "<<paste0('    ', paste(paste0('d', state_names), equations, sep = ' = '), collapse = '\n')>>\n",
-    "    list(c(<<paste(paste0('d', state_names), collapse = ', ')>>))\n",
-    "  })\n",
-    "}", .open = "<<", .close = ">>"
-  )
-}
-
-print_solver = function(ind, ind_n, state_values, state_names, multiple_states) {
-  if (multiple_states) {
-    max_len = max(vapply(state_values, length, integer(1)))
-    col_n = length(state_values) + 2 # Uno de la v.i y otro del grupo
-    col_names = paste0("'", state_names, "'", collapse = ", ")
-    glue::glue(
-      "df = data.frame(matrix(nrow = <<ind_n>> * <<max_len>>, ncol = <<col_n>>))\n",
-      "names(df) = c('<<ind>>', <<col_names>>, 'param_group')\n\n",
-      "for (i in 1:<<max_len>>) {\n",
-      "  state = c(<<paste0(state_names, ' = ', state_names, '[[i]]', collapse = ', ')>>)\n",
-      "  ode_output = ode(func = ode_function, y = state, times = <<ind>>, parms = parameters)\n",
-      "  ode_output = as.data.frame(ode_output)\n",
-      "  ode_output$param_group = paste('group', i)\n",
-      "  replace_idxs = ((i - 1) * <<ind_n>> + 1):(i * <<ind_n>>)\n",
-      "  df[replace_idxs, ] = ode_output\n",
-      "}\n",
-      .open = "<<", .close = ">>"
-    )
-  } else {
-    glue::glue(
-      "ode_output = ode(func = ode_function, y = state, times = {ind}, parms = parameters)\n",
-      "ode_output = as.data.frame(ode_output)"
-    )
-  }
-}
-
-print_ggplot = function(state, ind, multiple_states) {
-  if (multiple_states) {
-    glue::glue(
-      "ggplot(df) +\n",
-      "  geom_line(aes(x = {ind}, y = {state}, color = param_group), size = 1.5) +\n",
-      "  scale_color_viridis_d() +\n",
-      "  labs(title = '{paste('Estado', state)}') +\n",
-      "  theme(legend.position = 'none')",
-     .trim = FALSE
-    )
-  } else {
-    glue::glue(
-      "ggplot(ode_output) +\n",
-      "  geom_line(aes(x = {ind}, y = {state}), size = 1.5) +\n",
-      "  labs(title = '{paste('Estado', state)}')",
-      .trim = FALSE
-    )
-  }
-}
-
 process_states = function(string) {
   string = sub("\\s*^,", "", string)
   string = sub(",\\s*$", "", string)
@@ -278,7 +198,132 @@ withCustomHandler <- function(expr) {
   })
 }
 
-get_code_panel_1 = function(equation_components, param_values, state_values,
+print_header = function(ind, ind_min, ind_max, ind_n, param_names, param_values,
+                        state_names, state_values, multiple_states) {
+
+  if (multiple_states) {
+    state_values = recycle(state_values)
+    glue::glue(
+      "<<ind>> = seq(<<ind_min>>, <<ind_max>>, length.out = <<ind_n>>)\n",
+      "parameters = c(<<paste(param_names, '=', param_values, collapse = ', ')>>)\n",
+      "<<paste(state_names, '=',
+             sapply(state_values, function(x) paste0('c(' , paste(x, collapse = ', '), ')')),
+              collapse = '\n')>>\n",
+      .open = "<<", .close = ">>"
+    )
+  } else {
+    glue::glue(
+      "<<ind>> = seq(<<ind_min>>, <<ind_max>>, length.out = <<ind_n>>)\n",
+      "parameters = c(<<paste(param_names, '=', param_values, collapse = ', ')>>)\n",
+      "state = c(<<paste(state_names, '=', state_values, collapse = ', ')>>)\n",
+      .open = "<<", .close = ">>"
+    )
+  }
+}
+
+print_odefun = function(ind, state_names, equations) {
+  glue::glue(
+    "ode_function = function(<<ind>>, state, parameters) {\n",
+    "  with(as.list(c(state, parameters)), {\n",
+    "<<paste0('    ', paste(paste0('d', state_names), equations, sep = ' = '), collapse = '\n')>>\n",
+    "    list(c(<<paste(paste0('d', state_names), collapse = ', ')>>))\n",
+    "  })\n",
+    "}", .open = "<<", .close = ">>"
+  )
+}
+
+print_solver = function(ind, ind_n, state_values, state_names, multiple_states) {
+  if (multiple_states) {
+    max_len = max(vapply(state_values, length, integer(1)))
+    col_n = length(state_values) + 2 # Uno de la v.i y otro del grupo
+    col_names = paste0("'", state_names, "'", collapse = ", ")
+    txt = glue::glue(
+      "output_df = data.frame(matrix(nrow = <<ind_n>> * <<max_len>>, ncol = <<col_n>>))\n",
+      "names(output_df) = c('time', <<col_names>>, 'param_group')\n\n",
+      "for (i in 1:<<max_len>>) {\n",
+      "  state = c(<<paste0(state_names, ' = ', state_names, '[[i]]', collapse = ', ')>>)\n",
+      "  ode_output = ode(func = ode_function, y = state, times = <<ind>>, parms = parameters)\n",
+      "  ode_output = as.data.frame(ode_output)\n",
+      "  ode_output$param_group = paste('group', i)\n",
+      "  replace_idxs = ((i - 1) * <<ind_n>> + 1):(i * <<ind_n>>)\n",
+      "  output_df[replace_idxs, ] = ode_output\n",
+      "}\n",
+      .open = "<<", .close = ">>"
+    )
+  } else {
+    txt = glue::glue(
+      "ode_output = ode(func = ode_function, y = state, times = {ind}, parms = parameters)\n",
+      "output_df = as.data.frame(ode_output)"
+    )
+  }
+  return(txt)
+}
+
+
+print_ggplot = function(independent, states, multiple_states) {
+
+  if (length(states) > 1) {
+    cols = paste0(paste0("'", states, "'", collapse = ", "))
+    data_transform = glue::glue(
+      "output_df_long = tidyr::pivot_longer(\n",
+      "  data = output_df,\n",
+      "  cols = c({cols}),\n",
+      "  names_to = 'Estado',\n",
+      "  values_to = 'Valor',\n",
+      ")"
+    )
+    if (multiple_states) {
+      ggplot_code = glue::glue(
+        "ggplot(output_df_long) +\n",
+        "  geom_line(aes(x = time, y = Valor, color = param_group, linetype = Estado), size = 1.5) +\n",
+        "  scale_color_viridis_d()",
+        .trim = FALSE
+      )
+    } else {
+      ggplot_code = glue::glue(
+        "ggplot(output_df_long) +\n",
+        "  geom_line(aes(x = time, y = Valor, color = Estado), size = 1.5) +\n",
+        "  scale_color_viridis_d()",
+        .trim = FALSE
+      )
+    }
+    return(paste(data_transform, ggplot_code, sep = "\n\n", collapse = "\n"))
+  } else {
+    if (multiple_states) {
+      ggplot_code = ""
+      for (state in states) {
+        ggplot_code = paste0(
+          ggplot_code,
+          glue::glue(
+            "ggplot(output_df) +\n",
+            "  geom_line(aes(x = time, y = {state}, color = param_group), size = 1.5) +\n",
+            "  scale_color_viridis_d() +\n",
+            "  labs(title = '{paste('Estado', state)}') +\n",
+            "  theme(legend.position = 'none')",
+            .trim = FALSE
+          ),
+          sep = "\n\n"
+        )
+      }
+    } else {
+      ggplot_code = ""
+      for (state in states) {
+        ggplot_code = paste0(
+          ggplot_code,
+          glue::glue(
+            "ggplot(output_df) +\n",
+            "  geom_line(aes(x = time, y = {state}), size = 1.5) +\n",
+            "  labs(title = '{paste('Estado', state)}')",
+            .trim = FALSE
+          )
+        )
+      }
+    }
+    return(ggplot_code)
+  }
+}
+
+get_code_panel_1 = function(equation_components, param_values, state_values, state_selected,
                             ind_settings, multiple_states) {
 
   ind = equation_components$independent
@@ -296,16 +341,11 @@ get_code_panel_1 = function(equation_components, param_values, state_values,
   odefun = print_odefun(ind, state_names, equations)
   solver = print_solver(ind, ind_n, state_values, state_names, multiple_states)
 
-  ggplot = paste0(
-    purrr::map_chr(state_names, print_ggplot, ind = ind, multiple_states = multiple_states),
-    collapse = "\n\n"
-  )
+  ggplot = print_ggplot(ind, state_selected, multiple_states)
   paste(imports, header, odefun, solver, ggplot, sep = "\n\n", collapse = "\n")
 }
 
-
-get_graphs_panel_1 = function(.equation_components, .param_values, .state_values, .ind_settings, .multiple_states) {
-
+get_df_panel_1 = function(.equation_components, .param_values, .state_values, .ind_settings, .multiple_states) {
   .ind = .equation_components$independent
   .ind_min = .ind_settings$interval[1]
   .ind_max = .ind_settings$interval[2]
@@ -314,7 +354,6 @@ get_graphs_panel_1 = function(.equation_components, .param_values, .state_values
   .state_names = .equation_components$state
   .param_names = .equation_components$params
   .equations = .equation_components$eqs
-
 
   # Evaluate header
   eval(parse(text = print_header(
@@ -328,15 +367,16 @@ get_graphs_panel_1 = function(.equation_components, .param_values, .state_values
 
   # Evaluate solver
   eval(parse(text = print_solver(.ind, .ind_n, .state_values, .state_names, .multiple_states)))
-
-  # Generate ggplot2 code
-  ggplot_char = purrr::map_chr(.state_names, print_ggplot, ind = .ind, multiple_states = .multiple_states)
-
-  # Format and return output
-  output = purrr::map(ggplot_char, function(x) eval(parse(text = x)))
-  names(output) = .state_names
-  output
+  eval(parse(text = "return(output_df)"))
 }
+
+get_graph_panel_1 = function(store, states_selected) {
+  output_df = store$df_panel_1
+  independent = store$equation_components$independent
+  multiple_states = store$multiple_states
+  eval(parse(text = print_ggplot(independent, states_selected, multiple_states)))
+}
+
 
 # eq1 = "\\frac{dS}{dt} = b\\times N - \\beta\\times S \\times I - a \\times S"
 # eq2 = "\\frac{dI}{dt} = \\beta\\cdot S\\cdot I-\\gamma\\cdot I-a\\cdot I"
@@ -369,12 +409,14 @@ create_tempdir = function() {
   return(temp_dir)
 }
 
-create_and_save_plot = function(dir, plt_expr, plt_name) {
+create_and_save_plot = function(dir, settings_expr, plt_expr, plt_name) {
+
+  eval(parse(text = settings_expr))
   png(
     file.path(dir, paste0(plt_name, ".png")),
     res = 300, units = "in", width = 9.33, height = 7
   )
-  plt_expr
+  eval(parse(text = plt_expr))
   dev.off()
 }
 
@@ -419,7 +461,7 @@ print_flowfield = function(state_names, ind_range, state1_range, state2_range = 
     "  xlim = {xlim},\n",
     "  ylim = {ylim},\n",
     "  col = '#7f8c8d',\n",
-    "  lwd = 2,\n",
+    "  lwd = 2.5,\n",
     "  add = FALSE\n",
     ")"
   )
@@ -479,7 +521,8 @@ print_nullclines_legend = function(state_names) {
     "  lty = 1,\n",
     "  lwd = 3,\n",
     "  bg = 'white',\n",
-    "  inset = 0.025\n",
+    "  inset = 0.025,\n",
+    "  cex = 1.1\n",
     ")"
   )
 }
@@ -514,7 +557,8 @@ print_trajectory = function(state_names, ind_range, state1_vals, state2_vals = N
     "  state.names = {state_names},\n",
     "  system = '{system}',\n",
     "  y0 = y0,\n",
-    "  tlim = {tlim}\n",
+    "  tlim = {tlim},\n",
+    "  lwd = 2.5\n",
     ")"
   )
 }
@@ -603,3 +647,17 @@ get_code_panel_2 = function(equation_components, param_values, ind_settings,
 #   state2_list = list(name = "y", value = 0:1, range = c(0, 8)),
 #   return_type = 'plot'
 # ))
+
+make_counter = function() {
+  count = 0
+  f = function(reset=FALSE) {
+    if (reset) {
+      count <<- 0
+    } else {
+      count <<- count + 1
+    }
+    print(count)
+  }
+  return(f)
+}
+
