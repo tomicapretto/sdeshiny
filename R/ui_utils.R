@@ -19,3 +19,20 @@ latexInput2 = function(inputId, label, hidden = FALSE) {
     )
   }
 }
+
+paramInput = function(param) {
+  numericInput(
+    inputId = paste0("param_", param),
+    label = param,
+    value = 1
+  )
+}
+
+stateInput = function(state) {
+  textInput(
+    inputId = paste0("state_", state),
+    label = state,
+    value = "",
+    placeholder = "Uno o mas valores separados por ','"
+  )
+}
