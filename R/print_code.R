@@ -35,7 +35,7 @@ print_odefun = function(ind, state_names, equations) {
 print_solver = function(ind, ind_n, state_values, state_names, multiple_states) {
   if (multiple_states) {
     max_len = max(vapply(state_values, length, integer(1)))
-    col_n = length(state_values) + 2 # Uno de la v.i y otro del grupo
+    col_n = length(state_values) + 2 # 1 for the i.v. and other for the group
     col_names = paste0("'", state_names, "'", collapse = ", ")
     txt = glue::glue(
       "output_df = data.frame(matrix(nrow = <<ind_n>> * <<max_len>>, ncol = <<col_n>>))\n",
@@ -145,28 +145,28 @@ get_code_td = function(equation_components, param_values, state_values, state_se
   paste(imports, header, odefun, solver, ggplot, sep = "\n\n", collapse = "\n")
 }
 
-get_df_td = function(.equation_components, .param_values, .state_values, independent, .multiple_states) {
-  .ind = .equation_components$independent
+get_df_td = function(.equation_components, param_values, state_values, independent, multiple_states) {
+  ind = .equation_components$independent
 
-  .ind_min = independent$min
-  .ind_max = independent$max
-  .ind_n = independent$n
+  ind_min = independent$min
+  ind_max = independent$max
+  ind_n = independent$n
 
-  .state_names = .equation_components$state
-  .param_names = .equation_components$params
-  .equations = .equation_components$eqs
+  state_names = .equation_components$state
+  param_names = .equation_components$params
+  equations = .equation_components$eqs
 
   # Evaluate header
   eval(parse(text = print_header(
-    .ind, .ind_min, .ind_max, .ind_n, .param_names, .param_values,
-    .state_names, .state_values, .multiple_states
+    ind, ind_min, ind_max, ind_n, param_names, param_values,
+    state_names, state_values, multiple_states
   )))
 
   # Evaluate `ode_function`
   # This defines `ode_function` within the execuition environment of this function.
-  eval(parse(text = print_odefun(.ind, .state_names, .equations)))
+  eval(parse(text = print_odefun(ind, state_names, equations)))
   # Evaluate solver
-  eval(parse(text = print_solver(.ind, .ind_n, .state_values, .state_names, .multiple_states)))
+  eval(parse(text = print_solver(ind, ind_n, state_values, state_names, multiple_states)))
   eval(parse(text = "return(output_df)"))
 }
 
