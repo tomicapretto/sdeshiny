@@ -1,7 +1,7 @@
 Package: sdeshiny
 Type: Package
 Title: A Shiny Interface for a System of Differential Equations Solver
-Version: 0.1.1
+Version: 0.1.2
 Authors@R: c(
     person(given = "Tomas",
            family = "Capretto",
