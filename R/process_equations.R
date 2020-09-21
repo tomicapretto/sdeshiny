@@ -6,7 +6,8 @@ recycle = function(num_list) {
 split_equation = function(equation, split = "=") {
   equations = unlist(strsplit(equation, split))
   if (length(equations) != 2) {
-    stop("La expresion debe tener dos componentes, el diferencial y la ecuacion.")
+    lang = getOption("sdeshiny.lang")
+    stop(LANG_MSG[[lang]][["need_two_components"]])
   }
   return(equations)
 }
@@ -14,21 +15,18 @@ split_equation = function(equation, split = "=") {
 parse_differential = function(equation) {
   slash_count = stringr::str_count(equation, "/")
   if (slash_count != 1) {
-    stop(
-      paste0("La expresion del diferencial debe tener una sola fraccion, pero hay ", slash_count, ".")
-    )
+    lang = getOption("sdeshiny.lang")
+    stop(paste0(LANG_MSG[[lang]][["need_one_differential"]], slash_count, "."))
   }
   equations = stringr::str_remove_all(split_equation(equation, "/"), " ")
   if (any(!stringr::str_starts(equations, "d"))) {
-    stop(
-      paste0("Ambos componentes del diferencial deben empezar con 'd'. Por ejemplo, 'dx/dt'.")
-    )
+    lang = getOption("sdeshiny.lang")
+    stop(LANG_MSG[[lang]][["need_leibniz"]])
   }
 
   if (any(stringr::str_remove(equations, "d") == "")) {
-    stop(
-      paste0("Al menos una variable independiente o dependiente esta vacia.")
-    )
+    lang = getOption("sdeshiny.lang")
+    stop(LANG_MSG[[lang]][["empty_var"]])
   }
   return(list(
     "dep" = stringr::str_remove(equations[1], "d"),
@@ -95,11 +93,13 @@ process_equations = function(equations) {
   parameters = unique(unlist(purrr::map(components, function(x) x[[4]])))
 
   if (!length(unique(dependents)) == length(dependents)) {
-    stop("No puede haber mas una ecuacion para cada variable dependiente.")
+    lang = getOption("sdeshiny.lang")
+    stop(LANG_MSG[[lang]][["need_one_equation"]])
   }
 
   if (!length(independent) == 1) {
-    stop("La variable independiente debe ser la misma para todas las ecuaciones.")
+    lang = getOption("sdeshiny.lang")
+    stop(LANG_MSG[[lang]][["need_one_independent"]])
   }
 
   params = sort(setdiff(setdiff(parameters, dependents), independent))
@@ -116,7 +116,8 @@ process_states = function(string) {
   string = sub(",\\s*$", "", string)
 
   if (gsub(" ", "", string) == "") {
-    stop("El estado inicial no puede estar vacio.", call. = FALSE)
+    lang = getOption("sdeshiny.lang")
+    stop(LANG_MSG[[lang]][["need_non_empty_state"]])
   }
 
   x = suppressWarnings(as.numeric(string)) # Si es '' tambien da NA.
@@ -125,22 +126,28 @@ process_states = function(string) {
   }
 
   if (!grepl(",", string)) {
-    stop("Utilice ',' para indicar mas de un estado inicial.", call. = FALSE)
+    lang = getOption("sdeshiny.lang")
+    stop(LANG_MSG[[lang]][["use_commas"]])
   }
 
   x = tryCatch({
     as.numeric(unlist(strsplit(string, ",")))
   },
   warning = function(cnd) {
-    stop("No se pudo reconocer a los estados iniciales.", call. = FALSE)
+    lang = getOption("sdeshiny.lang")
+    stop(LANG_MSG[[lang]][["unrecognized_initial_states"]])
   },
   error = function(cnd) {
-    stop("No se pudo reconocer a los estados iniciales.", call. = FALSE)
+    lang = getOption("sdeshiny.lang")
+    stop(LANG_MSG[[lang]][["unrecognized_initial_states"]])
   })
   x[!is.na(x)]
 }
 
 process_param = function(param) {
-  if (is.na(param)) stop("Ningun parametro puede estar vacio", call. = FALSE)
+  if (is.na(param)) {
+    lang = getOption("sdeshiny.lang")
+    stop(LANG_MSG[[lang]][["need_non_empty_params"]])
+  }
   return(param)
 }

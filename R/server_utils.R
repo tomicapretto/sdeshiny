@@ -17,17 +17,21 @@ update_equation_n_gen = function() {
 }
 
 withCustomHandler = function(expr) {
+  lang = getOption("sdeshiny.lang")
   tryCatch({
     expr
   },
   shiny.silent.error = function(cnd) {
-    # This is the error class signalled by `req()`
-    NULL
+    NULL # This is the error class signalled by `req()`
   },
   error = function(cnd) {
-    shinypop::nx_notify_error(
-      paste("Ha ocurrido un error:", cnd$message)
-    )
+    if (lang == "ES") {
+      msg = paste("Ha ocurrido un error:", cnd$message)
+    }
+    if (lang == "EN") {
+      msg = paste("An error has occurred:", cnd$message)
+    }
+    shinypop::nx_notify_error(msg)
   })
 }
 

@@ -15,6 +15,53 @@ app_server = function(input, output, session) {
   # to trigger actions.
   store$params_set = FALSE
 
+  observeEvent(input$language, {
+    options("sdeshiny.lang" = input$language)
+  })
+
+  observeEvent(input$language, {
+    store$lang = input$language
+    updateSelectInput(
+      session = session,
+      inputId = "language",
+      label = LANG[[store$lang]][["language"]]
+    )
+    updateSliderInput(
+      session = session,
+      inputId = "equation_n",
+      label = LANG[[store$lang]][["equation_n"]]
+    )
+    updateActionButton(
+      session = session,
+      inputId = "set_eqs",
+      label = LANG[[store$lang]][["set_eqs"]]
+    )
+    updateActionButton(
+      session = session,
+      inputId = "unlock_eqs",
+      label = LANG[[store$lang]][["unlock_eqs"]]
+    )
+    updateActionButton(
+      session = session,
+      inputId = "set_params",
+      label = LANG[[store$lang]][["set_params"]]
+    )
+    updateActionButton(
+      session = session,
+      inputId = "unlock_params",
+      label = LANG[[store$lang]][["unlock_params"]]
+    )
+
+    req(store$equation_components$state)
+    for (state in store$equation_components$state) {
+      updateTextInput(
+        session = session,
+        inputId = paste0("state_", state),
+        placeholder = LANG[[store$lang]][["state_placeholder"]]
+      )
+    }
+  })
+
   update_equation_n = update_equation_n_gen()
 
   observe({
@@ -26,7 +73,9 @@ app_server = function(input, output, session) {
       equation_ids = paste0(c(paste0("eq", seq_len(input$equation_n))), "_latex")
       equations = purrr::map(equation_ids, function(x) input[[x]])
 
-      if (any(sapply(equations, is.null))) stop("Hay al menos una ecuacion vacia.", call. = FALSE)
+      if (any(sapply(equations, is.null))) {
+        stop(LANG_MSG[[store$lang]][["empty_equation"]])
+      }
 
       equation = as.character(equations)
       store$equation_components = process_equations(equations)
@@ -60,8 +109,7 @@ app_server = function(input, output, session) {
   observeEvent(input$set_params, {
     withCustomHandler({
       if (input$independent_min >= input$independent_max) {
-        stop("El limite inferior de la variable independiente debe ser menor al limite superior.",
-             call. = FALSE)
+        stop(LANG_MSG[[store$lang]][["bad_limits1"]], call. = FALSE)
       }
 
       store$multiple_states = FALSE
@@ -123,11 +171,11 @@ app_server = function(input, output, session) {
   output$paramsInputUI = renderUI({
     req(store$equation_components)
     tagList(
-      tags$h5(tags$strong("Estados inciales")),
+      tags$h5(tags$strong(LANG_HEADERS[[store$lang]][["initial_states"]])),
       purrr::map(store$equation_components$state, stateInput),
-      tags$h5(tags$strong("Parametros")),
+      tags$h5(tags$strong(LANG_HEADERS[[store$lang]][["parameters"]])),
       purrr::map(store$equation_components$params, paramInput),
-      tags$h5(tags$strong("Variable independiente"))
+      tags$h5(tags$strong(LANG_HEADERS[[store$lang]][["ind_var"]]))
     )
   })
 

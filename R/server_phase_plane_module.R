@@ -3,11 +3,84 @@ phasePlaneServer <- function(id, store) {
 
     isolate({
       module_store = reactiveValues()
+      store$enable_dwnld_plot_btn = FALSE
+    })
+
+    observeEvent(store$lang, {
+      updateSelectInput(
+        session = session,
+        inputId = "state1",
+        label = LANG[[store$lang]][["state1"]]
+      )
+      updateSelectInput(
+        session = session,
+        inputId = "state2",
+        label = LANG[[store$lang]][["state2"]]
+      )
+      updateNumericInput(
+        session = session,
+        inputId = "state1_min",
+        label = LANG[[store$lang]][["state1_min"]]
+      )
+      updateNumericInput(
+        session = session,
+        inputId = "state1_max",
+        label = LANG[[store$lang]][["state1_max"]]
+      )
+      updateNumericInput(
+        session = session,
+        inputId = "state2_min",
+        label = LANG[[store$lang]][["state2_min"]]
+      )
+      updateNumericInput(
+        session = session,
+        inputId = "state2_max",
+        label = LANG[[store$lang]][["state2_max"]]
+      )
+      updateActionButton(
+        session = session,
+        inputId = "get_plot",
+        label = LANG[[store$lang]][["get_plot"]]
+      )
+      updateActionButton(
+        session = session,
+        inputId = "get_code",
+        label = LANG[[store$lang]][["get_code"]]
+      )
+    })
+
+    output$graphics_header_ui = renderUI({
+      h3(LANG_HEADERS[[store$lang]][["graphics"]])
+    })
+
+    output$code_header_ui = renderUI({
+      h3(LANG_HEADERS[[store$lang]][["code"]])
+    })
+
+    output$dwnld_code_ui = renderUI({
+      func = if (store$params_set) `(` else disabled
+      func(
+        downloadButton(
+          outputId = NS(id, "dwnld_code"),
+          label = LANG[[store$lang]][["dwnld_code"]],
+          style = "width:100%;"
+        )
+      )
+    })
+
+    output$dwnld_plot_ui = renderUI({
+      func = if (store$enable_dwnld_plot_btn) `(` else disabled
+      func(
+        downloadButton(
+          outputId = NS(id, "dwnld_plot"),
+          label = LANG[[store$lang]][["dwnld_plot"]],
+          style = "width:100%;"
+        )
+      )
     })
 
     observeEvent(store$params_set, {
       if (store$params_set) {
-
         walk(c("state1", "state1_min", "state1_max"), show)
 
         updateSelectInput(
@@ -24,12 +97,13 @@ phasePlaneServer <- function(id, store) {
             choices = store$equation_components$state
           )
         }
-        walk(c("get_plot", "get_code", "dwnld_code"), enable)
+        walk(c("get_plot", "get_code"), enable)
         module_store$counter = make_counter()
       } else {
-        walk(c("get_plot", "dwnld_plot", "get_code", "dwnld_code"), disable)
+        walk(c("get_plot", "get_code"), disable)
         walk(c("state1", "state1_min", "state1_max"), hide)
         walk(c("state2", "state2_min", "state2_max"), hide)
+        store$enable_dwnld_plot_btn = FALSE
       }
     })
 
@@ -52,10 +126,12 @@ phasePlaneServer <- function(id, store) {
             range = c(input$state2_min, input$state2_max)
           )
           if (list1$name == list2$name) {
-            stop("Debes elegir dos estados distintos.", call. = FALSE)
+            stop(
+              LANG_MSG[[store$lang]][["choose_two_different_states"]],
+              call. = FALSE
+            )
           }
         }
-
         get_code_pp(
           store$equation_components,
           store$param_values,
@@ -92,7 +168,11 @@ phasePlaneServer <- function(id, store) {
             range = c(input$state2_min, input$state2_max)
           )
           if (list1$name == list2$name) {
-            stop("Debes elegir dos estados distintos.", call. = FALSE)
+            shinybusy::hide_spinner()
+            stop(
+              LANG_MSG[[store$lang]][["choose_two_different_states"]],
+              call. = FALSE
+            )
           }
         }
 
@@ -120,7 +200,7 @@ phasePlaneServer <- function(id, store) {
 
         # The plot can be downloaded only after it was generated.
         # The downloader can only download the last plot created.
-        enable("dwnld_plot")
+        store$enable_dwnld_plot_btn = TRUE
 
         shinybusy::hide_spinner()
         return(normalizePath(file.path(store$temp_dir, paste0(plt_name, ".png"))))
@@ -128,6 +208,7 @@ phasePlaneServer <- function(id, store) {
     })
 
     output$plot = renderImage({
+      req(module_store$plot_path())
       filename = module_store$plot_path()
       list(
         src = filename,
@@ -179,7 +260,10 @@ phasePlaneServer <- function(id, store) {
               range = c(input$state2_min, input$state2_max)
             )
             if (list1$name == list2$name) {
-              stop("Debes elegir dos estados distintos.", call. = FALSE)
+              stop(
+                LANG_MSG[[store$lang]][["choose_two_different_states"]],
+                call. = FALSE
+              )
             }
           }
 

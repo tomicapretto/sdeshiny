@@ -7,27 +7,21 @@ timeDependentUI = function(id) {
         "background: transparent; border: transparent;",
         "box-shadow: none;"
       ),
-      h3("Graficos"),
+      uiOutput(NS(id, "graphics_header_ui")),
       fluidRow(
         column(
           width = 6,
           disabled(
             actionButton(
               inputId = NS(id, "get_plot"),
-              label = "Obtener graficos",
+              label = "Obtener grafico",
               width = "100%"
             )
           )
         ),
         column(
           width = 6,
-          disabled(
-            downloadButton(
-              outputId = NS(id, "dwnld_plot"),
-              label = "Descargar grafico",
-              style = "width:100%;"
-            )
-          )
+          uiOutput(NS(id, "dwnld_plot_ui"))
         )
       ),
       hr(),
@@ -40,10 +34,8 @@ timeDependentUI = function(id) {
           multiple = TRUE
         )
       ),
-
       plotOutput(NS(id, "plot"), height = "420px", width = "560px"),
-
-      h3("Codigo"),
+      uiOutput(NS(id, "code_header_ui")),
       fluidRow(
         column(
           width = 6,
@@ -57,13 +49,7 @@ timeDependentUI = function(id) {
         ),
         column(
           width = 6,
-          disabled(
-            downloadButton(
-              outputId = NS(id, "dwnld_code"),
-              label = "Descargar codigo",
-              style = "width:100%;"
-            )
-          )
+          uiOutput(NS(id, "dwnld_code_ui"))
         )
       ),
       hr(),

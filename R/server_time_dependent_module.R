@@ -5,6 +5,55 @@ timeDependentSever <- function(id, store) {
       module_store = reactiveValues()
     })
 
+    observeEvent(store$lang, {
+      lang = store$lang
+      updateActionButton(
+        session = session,
+        inputId = "get_plot",
+        label = LANG[[lang]][["get_plot"]]
+      )
+      updateActionButton(
+        session = session,
+        inputId = "get_code",
+        label = LANG[[lang]][["get_code"]]
+      )
+      updateSelectInput(
+        session = session,
+        inputId = "selected_states",
+        label = LANG[[lang]][["selected_states"]]
+      )
+    })
+
+    output$graphics_header_ui = renderUI({
+      h3(LANG_HEADERS[[store$lang]][["graphics"]])
+    })
+
+    output$code_header_ui = renderUI({
+      h3(LANG_HEADERS[[store$lang]][["code"]])
+    })
+
+    output$dwnld_code_ui = renderUI({
+      func = if (store$params_set) `(` else disabled
+      func(
+        downloadButton(
+          outputId = NS(id, "dwnld_code"),
+          label = LANG[[store$lang]][["dwnld_code"]],
+          style = "width:100%;"
+        )
+      )
+    })
+
+    output$dwnld_plot_ui = renderUI({
+      func = if (store$params_set) `(` else disabled
+      func(
+        downloadButton(
+          outputId = NS(id, "dwnld_plot"),
+          label = LANG[[store$lang]][["dwnld_plot"]],
+          style = "width:100%;"
+        )
+      )
+    })
+
     observeEvent(store$params_set, {
       if (store$params_set) {
         tryCatch({
@@ -22,7 +71,7 @@ timeDependentSever <- function(id, store) {
         },
         warning = function(cnd) {
           shinypop::nx_notify_warning(
-            paste("El solver informa un warning:", cnd$message)
+            paste(LANG_MSG[[store$lang]][["solver_warning"]], cnd$message)
           )
           req(FALSE)
         },
@@ -30,7 +79,7 @@ timeDependentSever <- function(id, store) {
           shinybusy::hide_spinner()
         })
 
-        walk(c("get_plot", "dwnld_plot", "get_code", "dwnld_code"), enable)
+        walk(c("get_plot", "get_code"), enable)
         show("selected_states")
         updateSelectInput(
           session = session,
@@ -38,7 +87,7 @@ timeDependentSever <- function(id, store) {
           choices = store$equation_components$state
         )
       } else {
-        walk(c("get_plot", "dwnld_plot", "get_code", "dwnld_code"), disable)
+        walk(c("get_plot", "get_code"), disable)
         hide("selected_states")
       }
     })
@@ -47,7 +96,10 @@ timeDependentSever <- function(id, store) {
       withCustomHandler({
         selected_states = input$selected_states
         if (length(selected_states) == 0 || selected_states == "") {
-          stop("Selecciona al menos un estado.", call. = FALSE)
+          stop(
+            LANG_MSG[[store$lang]][["choose_at_least_one_state"]],
+            call. = FALSE
+          )
         }
         get_plot_td(
           df = module_store$df,
@@ -67,7 +119,10 @@ timeDependentSever <- function(id, store) {
         req(store$param_values, store$state_values)
         selected_states = input$selected_states
         if (length(selected_states) == 0 || selected_states == "") {
-          stop("Selecciona al menos un estado.", call. = FALSE)
+          stop(
+            LANG_MSG[[store$lang]][["choose_at_least_one_state"]],
+            call. = FALSE
+          )
         }
         get_code_td(
           store$equation_components,
@@ -95,7 +150,10 @@ timeDependentSever <- function(id, store) {
         withCustomHandler({
           selected_states = input$selected_states
           if (length(selected_states) == 0 || selected_states == "") {
-            stop("Selecciona al menos un estado.", call. = FALSE)
+            stop(
+              LANG_MSG[[store$lang]][["choose_at_least_one_state"]],
+              call. = FALSE
+            )
           }
           plt = get_plot_td(
             df = module_store$df,
@@ -118,7 +176,10 @@ timeDependentSever <- function(id, store) {
 
           selected_states = input$selected_states
           if (length(selected_states) == 0 || selected_states == "") {
-            stop("Selecciona al menos un estado.", call. = FALSE)
+            stop(
+              LANG_MSG[[store$lang]][["choose_at_least_one_state"]],
+              call. = FALSE
+            )
           }
           code = get_code_td(
             store$equation_components,

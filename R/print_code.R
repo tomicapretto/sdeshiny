@@ -68,21 +68,21 @@ print_ggplot = function(independent, states, multiple_states) {
       "output_df_long = tidyr::pivot_longer(\n",
       "  data = output_df,\n",
       "  cols = c({cols}),\n",
-      "  names_to = 'Estado',\n",
-      "  values_to = 'Valor',\n",
+      "  names_to = 'State',\n",
+      "  values_to = 'Value',\n",
       ")"
     )
     if (multiple_states) {
       ggplot_code = glue::glue(
         "ggplot(output_df_long) +\n",
-        "  geom_line(aes(x = time, y = Valor, color = param_group, linetype = Estado), size = 1.5) +\n",
+        "  geom_line(aes(x = time, y = Value, color = param_group, linetype = State), size = 1.5) +\n",
         "  scale_color_viridis_d()",
         .trim = FALSE
       )
     } else {
       ggplot_code = glue::glue(
         "ggplot(output_df_long) +\n",
-        "  geom_line(aes(x = time, y = Valor, color = Estado), size = 1.5) +\n",
+        "  geom_line(aes(x = time, y = Value, color = State), size = 1.5) +\n",
         "  scale_color_viridis_d()",
         .trim = FALSE
       )
@@ -98,7 +98,7 @@ print_ggplot = function(independent, states, multiple_states) {
             "ggplot(output_df) +\n",
             "  geom_line(aes(x = time, y = {state}, color = param_group), size = 1.5) +\n",
             "  scale_color_viridis_d() +\n",
-            "  labs(title = '{paste('Estado', state)}') +\n",
+            "  labs(title = '{paste('State', state)}') +\n",
             "  theme(legend.position = 'none')",
             .trim = FALSE
           ),
@@ -113,7 +113,7 @@ print_ggplot = function(independent, states, multiple_states) {
           glue::glue(
             "ggplot(output_df) +\n",
             "  geom_line(aes(x = time, y = {state}), size = 1.5) +\n",
-            "  labs(title = '{paste('Estado', state)}')",
+            "  labs(title = '{paste('State', state)}')",
             .trim = FALSE
           )
         )

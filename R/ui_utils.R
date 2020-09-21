@@ -29,10 +29,11 @@ paramInput = function(param) {
 }
 
 stateInput = function(state) {
+  lang = getOption("sdeshiny.lang")
   textInput(
     inputId = paste0("state_", state),
     label = state,
     value = "",
-    placeholder = "Uno o mas valores separados por ','"
+    placeholder = LANG[[lang]][["state_placeholder"]]
   )
 }

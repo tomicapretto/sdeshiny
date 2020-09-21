@@ -7,7 +7,7 @@ phasePlaneUI = function(id) {
         "background: transparent; border: transparent;",
         "box-shadow: none;"
       ),
-      h3("Graficos"),
+      uiOutput(NS(id, "graphics_header_ui")),
       fluidRow(
         column(
           width = 6,
@@ -21,13 +21,7 @@ phasePlaneUI = function(id) {
         ),
         column(
           width = 6,
-          disabled(
-            downloadButton(
-              outputId = NS(id, "dwnld_plot"),
-              label = "Descargar grafico",
-              style = "width:100%;"
-            )
-          )
+          uiOutput(NS(id, "dwnld_plot_ui"))
         )
       ),
       hr(),
@@ -103,10 +97,8 @@ phasePlaneUI = function(id) {
           )
         )
       ),
-
       imageOutput(NS(id, "plot"), width = "100%"),
-
-      h3("Codigo"),
+      uiOutput(NS(id, "code_header_ui")),
       fluidRow(
         column(
           width = 6,
@@ -120,13 +112,7 @@ phasePlaneUI = function(id) {
         ),
         column(
           width = 6,
-          disabled(
-            downloadButton(
-              outputId = NS(id, "dwnld_code"),
-              label = "Descargar codigo",
-              style = "width:100%;"
-            )
-          )
+          uiOutput(NS(id, "dwnld_code_ui"))
         )
       ),
       hr(),
