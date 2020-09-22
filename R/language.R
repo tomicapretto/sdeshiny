@@ -57,7 +57,8 @@ LANG_MSG = list(
     "use_commas" = "Utilice ',' para indicar mas de un estado inicial.",
     "unrecognized_initial_states" = "No se pudo reconocer a los estados iniciales.",
     "need_non_empty_params" = "Ningun parametro puede estar vacio.",
-    "empty_equation" = "Hay al menos una ecuacion vacia."
+    "empty_equation" = "Hay al menos una ecuacion vacia.",
+    "need_parameters" = "No se detectaron parametros en ninguna de las ecuaciones."
   ),
   "EN" = list(
     "choose_two_different_states" = "Choose two different states.",
@@ -74,7 +75,8 @@ LANG_MSG = list(
     "use_commas" = "Use ',' to pass more than one initial state.",
     "unrecognized_initial_states" = "Initial states could not be recognized.",
     "need_non_empty_params" = "Parameters cannot be empty.",
-    "empty_equation" = "There is at least one empty equation."
+    "empty_equation" = "There is at least one empty equation.",
+    "need_parameters" = "No parameters found in any of the equations."
   )
 )
 

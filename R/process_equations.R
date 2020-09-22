@@ -1,5 +1,5 @@
 recycle = function(num_list) {
-  length_max <- max(vapply(num_list, length, integer(1)))
+  length_max = max(vapply(num_list, length, integer(1)))
   lapply(num_list, rep_len, length.out = length_max)
 }
 
@@ -104,6 +104,11 @@ process_equations = function(equations) {
 
   params = sort(setdiff(setdiff(parameters, dependents), independent))
   params = params[order(nchar(params))]
+
+  if (length(params) == 0) {
+    lang = getOption("sdeshiny.lang")
+    stop(LANG_MSG[[lang]][["need_parameters"]])
+  }
 
   return(list(
     "eqs" = equations,"state" = dependents,
