@@ -19,11 +19,12 @@ codigo en R o utilizar los paquetes deSolve/phaseR.
 
 La principal caracteristica de esta aplicacion es que el usuario puede
 escribir cualquier sistema de ecuaciones diferenciales autonomas
-utilizando un campo de entrada basado en
-[Mathquill](http://mathquill.com/) y no esta restringido a una cantidad
-de variables o parametros. Internamente, la representacion en LaTeX que
-devuelve el campo de entrada basado en Mathquill es convertida a R
-mediante el paquete [latex2r](https://github.com/tomicapretto/latex2r).
+utilizando `mathInput()` del paquete
+[`shinymath`](https://github.com/tomicapretto/shinymath) y no esta
+restringido a una cantidad de variables o parametros. Internamente, la
+representacion en LaTeX que devuelve el campo de entrada basado en
+Mathquill es convertida a R mediante el paquete
+[latex2r](https://github.com/tomicapretto/latex2r).
 
 Esta aplicacion reconoce automaticamente estados, parametros y variable
 independiente del sistema para que luego el usuario indique valores para

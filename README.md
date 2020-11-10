@@ -17,10 +17,11 @@ differential equations without having to write R code or knowing how to
 use packages deSolve/phaseR.
 
 One of the nice features of this app is that the user can write
-autonomous system of differential equations using a custom input based
-on [Mathquill](http://mathquill.com/) with arbitrary state and parameter
-names. Under the hood, the LaTeX representation is translated to R code
-via [latex2r](https://github.com/tomicapretto/latex2r).
+autonomous system of differential equations using a `mathInput()` from
+the package [`shinymath`](https://github.com/tomicapretto/shinymath)
+with arbitrary state and parameter names. Under the hood, the LaTeX
+representation is translated to R code via
+[latex2r](https://github.com/tomicapretto/latex2r).
 
 The app automatically recognizes states, parameters, and the independent
 variable of the system. Then, the app shows the inputs that correspond
