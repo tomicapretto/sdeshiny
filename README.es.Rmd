@@ -26,7 +26,7 @@ los paquetes deSolve/phaseR.
 
 La principal caracteristica de esta aplicacion es que el usuario puede
 escribir cualquier sistema de ecuaciones diferenciales autonomas 
-utilizando `mathInput()` del paquete [`shinymath`](https://github.com/tomicapretto/shinymath)
+utilizando `mathInput()` del paquete [shinymath](https://github.com/tomicapretto/shinymath)
 y no esta restringido a una cantidad de variables o parametros.
 Internamente, la representacion en LaTeX que devuelve el campo de
 entrada basado en Mathquill es convertida a R mediante el paquete

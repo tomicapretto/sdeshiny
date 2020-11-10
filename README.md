@@ -18,8 +18,8 @@ use packages deSolve/phaseR.
 
 One of the nice features of this app is that the user can write
 autonomous system of differential equations using a `mathInput()` from
-the package [`shinymath`](https://github.com/tomicapretto/shinymath)
-with arbitrary state and parameter names. Under the hood, the LaTeX
+the package [shinymath](https://github.com/tomicapretto/shinymath) with
+arbitrary state and parameter names. Under the hood, the LaTeX
 representation is translated to R code via
 [latex2r](https://github.com/tomicapretto/latex2r).
 
