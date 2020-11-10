@@ -18,7 +18,10 @@ parse_differential = function(equation) {
     lang = getOption("sdeshiny.lang")
     stop(paste0(LANG_MSG[[lang]][["need_one_differential"]], slash_count, "."))
   }
-  equations = stringr::str_remove_all(split_equation(equation, "/"), " ")
+  # Split equations, remove '*' and blank spaces.
+  equations = split_equation(equation, "/")
+  equations = gsub("\\*| |\\(|\\)", "", equations)
+  print(equations)
   if (any(!stringr::str_starts(equations, "d"))) {
     lang = getOption("sdeshiny.lang")
     stop(LANG_MSG[[lang]][["need_leibniz"]])

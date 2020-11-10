@@ -3,7 +3,7 @@ latexInput2 = function(inputId, label, hidden = FALSE) {
     shinyjs::hidden(
       shiny::div(
         id = paste0(inputId, "_div"),
-        latex2r::latexInput(
+        shinymath::mathInput(
           inputId = inputId,
           label = label
         )
@@ -12,7 +12,7 @@ latexInput2 = function(inputId, label, hidden = FALSE) {
   } else {
     shiny::div(
       id = paste0(inputId, "_div"),
-      latex2r::latexInput(
+      shinymath::mathInput(
         inputId = inputId,
         label = label
       )

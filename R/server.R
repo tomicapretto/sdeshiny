@@ -11,6 +11,10 @@ app_server = function(input, output, session) {
   store$independent = list(n = 500, min = 0, max = 20)
   store$temp_dirs = c()
 
+  observe({
+    print(input$eq1)
+  })
+
   # This are shared variables that are accessed by other modules
   # to trigger actions.
   store$params_set = FALSE
@@ -70,7 +74,10 @@ app_server = function(input, output, session) {
 
   observeEvent(input$set_eqs, {
     withCustomHandler({
-      equation_ids = paste0(c(paste0("eq", seq_len(input$equation_n))), "_latex")
+      # equation_ids = paste0(c(paste0("eq", seq_len(input$equation_n))), "_latex")
+      equation_ids = paste0("eq", seq_len(input$equation_n))
+      print(equation_ids)
+      print(input$eq1)
       equations = purrr::map(equation_ids, function(x) input[[x]])
 
       if (any(sapply(equations, is.null))) {

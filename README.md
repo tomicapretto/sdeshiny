@@ -1,83 +1,80 @@
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
 # sdeshiny
 
-Este paquete contiene una aplicacion escrita en
-[Shiny](https://shiny.rstudio.com/) que funciona como interface para los
-paquetes [deSolve](https://CRAN.R-project.org/package=deSolve) y
-[phaseR](https://CRAN.R-project.org/package=phaseR). Esta aplicacion fue
-desarrollada como trabajo final para el curso de doctorado Modelos
-Matematicos Continuos dictado en Febrero del 2020 en Rosario por [Marco
-Scavino](https://scholar.google.com/citations?user=woT0slUAAAAJ).
+Read this in other languages: [Español](README.es.md)
 
-El objetivo de esta aplicacion es facilitar el analisis de sistemas de
-ecuaciones diferenciales sin necesidad de que el usuario sepa escribir
-codigo en R o utilizar los paquetes deSolve/phaseR.
+This package contains a [Shiny](https://shiny.rstudio.com/) application
+that works as an interface to the packages
+[deSolve](https://CRAN.R-project.org/package=deSolve) and
+[phaseR](https://CRAN.R-project.org/package=phaseR). This app was
+developed as a final proejct for a course on mathematical modelling
+taught by [Marco
+Scavino](https://scholar.google.com/citations?user=woT0slUAAAAJ) on
+February 2020 in Rosario.
 
-La principal caracteristica de esta aplicacion es que el usuario puede
-escribir cualquier sistema de ecuaciones diferenciales autonomas
-utilizando un campo de entrada basado en
-[Mathquill](http://mathquill.com/) y no esta restringido a una cantidad
-de variables o parametros. Internamente, la representacion en LaTeX que
-devuelve el campo de entrada basado en Mathquill es convertida a R
-mediante el paquete [latex2r](https://github.com/tomicapretto/latex2r).
+The goal of this app is to make it easier to solve system of
+differential equations without having to write R code or knowing how to
+use packages deSolve/phaseR.
 
-Esta aplicacion reconoce automaticamente estados, parametros y variable
-independiente del sistema para que luego el usuario indique valores para
-los mismos.
+One of the nice features of this app is that the user can write
+autonomous system of differential equations using a custom input based
+on [Mathquill](http://mathquill.com/) with arbitrary state and parameter
+names. Under the hood, the LaTeX representation is translated to R code
+via [latex2r](https://github.com/tomicapretto/latex2r).
 
-El usuario no solo puede analizar un sistema de ecuaciones diferenciales
-mediante graficos de estados vs tiempo o graficos en el plano de fases,
-sino que tambien puede descargar el codigo necesario para reproducir el
-analisis en otro momento. Por lo tanto, esta aplicacion no solo facilita
-el analisis, sino que tambien sirve como punto de partida para quien
-quiera utilizar los paquetes deSolve/phaseR.
+The app automatically recognizes states, parameters, and the independent
+variable of the system. Then, the app shows the inputs that correspond
+to these components. What’s more, the user not only gets graphics to
+analyze the ODE system but also the R code required to reproduce the
+analysis. Thus, this app also serves as a starting point to those who
+don’t know how to use packages deSolve and phaseR.
 
-## Instalacion
+Finally, the app is now multi-lingual. It supports both Spanish and
+English.
 
-Este paquete aun no fue publicado en CRAN y es muy poco probable que eso
-suceda. La version en desarrollo se puede instalar desde
-[GitHub](https://github.com/) mediante:
+## Installation
+
+This package is not published on CRAN and it is not likely to happen in
+the near future. The development version can be installed from
+[GitHub](https://github.com/) via:
 
 ``` r
 # install.packages("devtools")
 devtools::install_github("tomicapretto/sdeshiny")
 ```
 
-## Corriendo la app
+## Running the app
 
-Para correr la aplicacion solo hace falta llamar a la funcion
-`launch_app()`
+You just need to call `launch_app()`
 
 ``` r
 sdeshiny::launch_app()
 ```
 
-## Notas
+## Notes
 
-Es importante resaltar algunas caractersiticas y limitaciones del
-sistema.
+It is important to remark some characteristis and limitations of the
+system.
 
 ### `latex2r`
 
-Esta aplicacion hereda todas las limitaciones y caracteristicas del
-parser implementado en `latex2r`. Es recomendable echarle un vistazo a
-[estas notas](https://github.com/tomicapretto/latex2r#supported-latex)
-en `latex2r` antes de utilizar la app.
+This app comes with all the limitations and characteristics from the
+parser implemented in `latex2r`. Please have a look at [these
+notes](https://github.com/tomicapretto/latex2r#supported-latex) before
+using the app.
 
-### Notacion de Leibniz
+### Leibniz notation
 
-Las ecuaciones diferenciales deben ser indicadas utilizando la notacion
-de Leibniz.  
-Bien:
+The differential equations must be expressed using Leibniz notation.
+
+Good:
 
   - `dX/dt = -\lambda * X`
 
-Mal:
+Bad:
 
 `X' = -\lambda * X`
 
-## Video introductorio
+## Introductory video (in Spanish)
 
   - [Como usar sdeshiny](https://www.youtube.com/watch?v=CZP9TaTwRlI)

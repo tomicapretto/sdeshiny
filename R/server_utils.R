@@ -24,6 +24,16 @@ withCustomHandler = function(expr) {
   shiny.silent.error = function(cnd) {
     NULL # This is the error class signalled by `req()`
   },
+  latex2r.error = function(cnd) {
+    if (lang == "ES") {
+      msg = paste("Ha ocurrido un error en latex2r:", cnd$message)
+    }
+    if (lang == "EN") {
+      msg = paste("An error has occurred in latex2r:", cnd$message)
+    }
+    shinypop::nx_notify_error(msg)
+  },
+
   error = function(cnd) {
     if (lang == "ES") {
       msg = paste("Ha ocurrido un error:", cnd$message)
